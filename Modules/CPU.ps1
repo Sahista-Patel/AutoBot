@@ -4,7 +4,7 @@
     [int]$holdflag
 )
 
-$logfile = "C:\Users\A667141\eclipse-workspace\Test\Logs\txtlog.txt"
+$logfile = "C:\Test\Logs\txtlog.txt"
 
 
 
@@ -16,9 +16,9 @@ $logfile = "C:\Users\A667141\eclipse-workspace\Test\Logs\txtlog.txt"
     #$type = $desc.Substring(0,$desc.IndexOf(" "))
     
     ##########################################Edit worknote
-    # Eg. User name="admin", Password="admin" for this code sample.
-    $user = "ATOSA667141"
-    $pass = "F@izu@1997@@"
+    # Eg. User name="UserName", Password="Password" for this code sample.
+    $user = "UserName"
+    $pass = "Password"
 
     # Build auth header
     $base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $user, $pass)))
@@ -30,7 +30,7 @@ $logfile = "C:\Users\A667141\eclipse-workspace\Test\Logs\txtlog.txt"
     $headers.Add('Accept','application/json')
     $headers.Add('Content-Type','application/json')
     # Specify endpoint uri
-    $uri = "https://atosglobaldev.service-now.com/api/now/table/incident/"+$SysId+""
+    $uri = "https://InstanceName/api/now/table/incident/"+$SysId+""
 
     # Specify HTTP method
     $method = "patch"
@@ -66,9 +66,9 @@ $logfile = "C:\Users\A667141\eclipse-workspace\Test\Logs\txtlog.txt"
                     $li.'CPU (%)'
                 }
                 if($holdflag -eq 0){
-                 # Specify request body
+                 # Specify request body....Specify Assignment Group ID
                 $body = "{`"work_notes`":`"$result`",
-                           `"assignment_group`":`"549714e1dbe614508fa197f2f3961960`",
+                           `"assignment_group`":`"XXXXXXX`",
                            `"incident_state`":`"1`"
                          }"
                  }
