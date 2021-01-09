@@ -1,4 +1,54 @@
-﻿$csvfile = "C:\Documents\Inc_Track.csv"
+<#
+.SYNOPSIS
+    This script will fetch the ServiceNow 'New' Incidents for specific assignment queue.
+    1. It will keep them In-Progress.
+    2. Check the descriptions of each incident and create parallel process for each type of issue.
+    3. If Multiple Incidents for same issue it will create parent child reletionship or if active incident found then resolve child Incidents by giving parent reference.
+    4. It will check Active Incident track in start of the run and update the file if in resolved state.
+    5. There are 5 types of issue resolved autmatically for windows servers
+        1. Availability
+        2. CPU Utilisation beyond threshold
+        3. Memory Utilisation beyond threshold
+        4. Diskspace Utilisation beyond threshold
+        5. Service stopped
+
+.DESCRIPTION
+    It will check current status of the server for respective issue.
+    If false alarm found it will resolve the incident with an appropriate Work-Note and Resolution Note.
+    For genuine alarm it will try to reslove, for example start the service remotely for perticular server, 
+    Delete temp [Specified folders] for disk space issue,
+    Kill unncessary processes [Specified processes] if running, etc
+    If able to resolve then close the Incident with specific WorkNote,
+    Else if unable to resolve then transfer it to second level group.
+
+.INPUTS
+    Place folders in proper folder.
+    Please set varibles like below and as and when guided by comment through code for each file.
+    Set log file path (example) {$logfile = "C:\Test\Logs\txtlog.txt"}
+    Set your servicenow Instance (example) {$Instance="InstanceName"}
+    Set your servicenow Instance in uri also in place of 'InstanceName'(example) {
+        $uri = "https://InstanceName/api/now/table/incident/"+$SysId+""}
+    Set your UserName and Password for SNOW Instance (example) {
+        $user = "UserName"
+        $pass = "Password"}
+    Set 1st level assignment group Name which work need to be automated (example) {$AssignGroup="AssignmentgroupName"} 
+    Set 2nd level assignment group ID [As per your SNOW Instance] to which incident needs to be forwarded if need further intervention (example) {
+       `"assignment_group`":`"XXXXXXX`",} 
+    Set path of the Incident Track (example) {
+        ﻿$csvfile = "C:\Documents\Inc_Track.csv"}
+
+.EXAMPLE
+    .\driver.ps1
+
+.NOTES
+    This will execute the script and if scheduled in interval of 5 minutes than entire L0 and L1 task will be automated for ITIL.
+
+.AUTHOR
+    Harsh Parecha
+    Sahista Patel
+#>
+
+$csvfile = "C:\Documents\Inc_Track.csv"
 $logfile = "C:\Test\Logs\txtlog.txt"
 
 $obj = @()
