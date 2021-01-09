@@ -4,7 +4,7 @@
     $csvnum
 )
 
-$logfile = "C:\Users\A667141\eclipse-workspace\Test\Logs\txtlog.txt"
+$logfile = "C:\Test\Logs\txtlog.txt"
 
     Write-Host "Working On: " + $Incident.number
     $logcontent = (Get-Date).ToString() +  " Working On: " + $Incident.number + "`r`n"
@@ -13,8 +13,8 @@ $logfile = "C:\Users\A667141\eclipse-workspace\Test\Logs\txtlog.txt"
     
     ##########################################Edit worknote
     # Eg. User name="admin", Password="admin" for this code sample.
-    $user = "ATOSA667141"
-    $pass = "F@izu@1997@@"
+    $user = "UserName"
+    $pass = "Password"
 
     # Build auth header
     $base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $user, $pass)))
@@ -26,7 +26,7 @@ $logfile = "C:\Users\A667141\eclipse-workspace\Test\Logs\txtlog.txt"
     $headers.Add('Accept','application/json')
     $headers.Add('Content-Type','application/json')
     # Specify endpoint uri
-    $uri = "https://atosglobaldev.service-now.com/api/now/table/incident/"+$SysId+""
+    $uri = "https://Instancename/api/now/table/incident/"+$SysId+""
 
     # Specify HTTP method
     $method = "patch"
