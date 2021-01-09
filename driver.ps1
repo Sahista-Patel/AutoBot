@@ -32,6 +32,8 @@
         $user = "UserName"
         $pass = "Password"}
     Set 1st level assignment group Name which work need to be automated (example) {$AssignGroup="AssignmentgroupName"} 
+    Set BOT sysId for assigned to (example) {
+       ``"assigned_to`":`"fd318a1bdb0a90508XXXXXXXX`",} 
     Set 2nd level assignment group ID [As per your SNOW Instance] to which incident needs to be forwarded if need further intervention (example) {
        `"assignment_group`":`"XXXXXXX`",} 
     Set path of the Incident Track (example) {
@@ -108,11 +110,11 @@ foreach ($Incident1 in $Requests.result) {
     # Specify HTTP method
     $method = "patch"
 
-                # Specify request body
+                # Specify request body.....Specify BOT ID for assigned to
                 $body = "{
                             `"work_notes`":`"Working On it.`",  
                             `"incident_state`":`"2`",
-                            `"assigned_to`":`"fd318a1bdb0a90508fa197f2f3961979`"
+                            `"assigned_to`":`"fd318a1bdb0a90508XXXXXXXX`"
                             }"
      
     # Send HTTP request
