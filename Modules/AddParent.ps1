@@ -12,7 +12,7 @@ $logfile = "C:\Test\Logs\txtlog.txt"
     $SysId = $Incident.sys_id.ToString()
     
     ##########################################Edit worknote
-    # Eg. User name="admin", Password="admin" for this code sample.
+    # Eg. User name="UserName", Password="Password" for this code sample.
     $user = "UserName"
     $pass = "Password"
 
