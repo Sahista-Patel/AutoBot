@@ -1,24 +1,23 @@
-﻿$csvfile = "C:\Users\A667141\Documents\Inc_Track.csv"
-$logfile = "C:\Users\A667141\eclipse-workspace\Test\Logs\txtlog.txt"
+﻿$csvfile = "C:\Documents\Inc_Track.csv"
+$logfile = "C:\Test\Logs\txtlog.txt"
 
 $obj = @()
 $csvchldcount = 0
 Remove-Job -state Completed
 
 #// Set Instance 
-$Instance="atosglobaldev"
+$Instance="InstanceName"
 $InstanceName = "https://"+$Instance+".service-now.com/" 
 
 
  
 #// Create SN REST API credentials 
-$SNowUser = "ATOSA667141" 
-$SNowPass = "F@izu@1997" | ConvertTo-SecureString -asPlainText -Force 
+$SNowUser = "UserName" 
+$SNowPass = "Password" | ConvertTo-SecureString -asPlainText -Force 
 $SNowCreds = New-Object –TypeName System.Management.Automation.PSCredential –ArgumentList $SNowUser, $SNowPass 
 
 
-$AssignGroup="EOC_L1"
-#$num = "INC0010306"
+$AssignGroup="AssignmentgroupName"
 
 
 #// Get all incidents Assigned To 
@@ -40,9 +39,9 @@ foreach ($Incident1 in $Requests.result) {
     
 
     ##########################################Edit worknote
-    # Eg. User name="admin", Password="admin" for this code sample.
-    $user = "ATOSA667141"
-    $pass = "F@izu@1997"
+    # Eg. User name="UserName", Password="Password" for this code sample.
+    $user = "UserName"
+    $pass = "Password"
 
     # Build auth header
     $base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $user, $pass)))
@@ -54,7 +53,7 @@ foreach ($Incident1 in $Requests.result) {
     $headers.Add('Accept','application/json')
     $headers.Add('Content-Type','application/json')
     # Specify endpoint uri
-    $uri = "https://atosglobaldev.service-now.com/api/now/table/incident/"+$SysId+""
+    $uri = "https://InstanceName/api/now/table/incident/"+$SysId+""
 
     # Specify HTTP method
     $method = "patch"
@@ -102,7 +101,7 @@ foreach ($Incident1 in $Requests.result) {
 
     $parentcheckrs = $null
     ##$csv | where {$_.Short_Description -eq "CPU LAPTOP-HR8RU4NU"}
-    $csv = import-csv "C:\Users\A667141\Documents\Inc_Track.csv"
+    $csv = import-csv "C:\Documents\Inc_Track.csv"
     $parentcheckrspr = $csv | where CI -Like $csvci
     $parentcheckrs = $parentcheckrspr | where Short_Description -Like $csvdec 
     #$parentcheck
@@ -110,27 +109,27 @@ foreach ($Incident1 in $Requests.result) {
             foreach($parentcheck in $parentcheckrs){
         
             $pr = $parentcheck.Incident_Id
-            $URI = "https://atosglobaldev.service-now.com/api/now/table/incident/"+$pr+""
+            $URI = "https://InstanceName/api/now/table/incident/"+$pr+""
             $parentstcheck = Invoke-RestMethod -Uri $URI -Credential $SNowCreds -Method GET -ContentType "application/json" 
             $parent = $parentstcheck.result
             if ($parent.state -lt 6){
                # $csvsta = "Alive"
                 Write-Host "Parent Found For. " + $csvnum + " Parent " + $parent.number
                 $csvnum = $parent.number
-                Start-Job -FilePath C:\Users\A667141\Documents\Modules\AddParent.ps1 -ArgumentList $Incident1,$csvnum
+                Start-Job -FilePath C:\Modules\AddParent.ps1 -ArgumentList $Incident1,$csvnum
                 $csvpar = $parent.sys_id
                 $csvdec = $parent.short_description
                 $csvpar = $pr
                 $csvpri = $parent.priority
                 $csvchldcount = [int]($parentcheck.Child_Count) + 1
                 $csvlstup = [Math]::Round((Get-Date).ToFileTime() / 10000000 - 11644473600)
-                $csv | where Incident_Id -NE $pr | Export-Csv 'C:\Users\A667141\Documents\Inc_Track.csv' -NoTypeInformation
+                $csv | where Incident_Id -NE $pr | Export-Csv 'C:\Documents\Inc_Track.csv' -NoTypeInformation
                 #sleep(5)
                 $NewRow = "$csvnum,$pr,$csvci,$csvdec,$csvpar,$csvchldcount,$csvpri,$csvlstup"
                 $NewRow | Add-Content -Path $csvFile
             }
             else{
-                $csv | where Incident_Id -NE $pr | Export-Csv 'C:\Users\A667141\Documents\Inc_Track.csv' -NoTypeInformation
+                $csv | where Incident_Id -NE $pr | Export-Csv 'C:\Documents\Inc_Track.csv' -NoTypeInformation
                 #$csvsta = "Dead"
                 $obj += $Incident1
                 $csvlstup = [Math]::Round((Get-Date).ToFileTime() / 10000000 - 11644473600)
@@ -165,27 +164,27 @@ foreach ($Incident1 in $Requests.result) {
                 switch($type) {
                     Availability {
                         Write-Host "Availability Match."
-                        Start-Job -FilePath C:\Users\A667141\Documents\Modules\Availability.ps1 -ArgumentList $objchild,$holdflag
+                        Start-Job -FilePath C:\Modules\Availability.ps1 -ArgumentList $objchild,$holdflag
                         Write-Host "Availability Module called."
                     } 
                     Disk {
                         Write-Host "Disk Match"
-                        Start-Job -FilePath C:\Users\A667141\Documents\Modules\DiskSpace.ps1 -ArgumentList $objchild,$holdflag
+                        Start-Job -FilePath C:\Modules\DiskSpace.ps1 -ArgumentList $objchild,$holdflag
                         Write-Host "Disk Module called."
                     } 
                     Service {
                         Write-Host "Service Match"
-                        Start-Job -FilePath C:\Users\A667141\Documents\Modules\Services.ps1 -ArgumentList $objchild,$holdflag
+                        Start-Job -FilePath C:\Modules\Services.ps1 -ArgumentList $objchild,$holdflag
                         Write-Host "Service Module called."
                     }
                     CPU {
                         Write-Host "CPU Match"
-                        Start-Job -FilePath C:\Users\A667141\Documents\Modules\CPU.ps1 -ArgumentList $objchild,$holdflag
+                        Start-Job -FilePath C:\Modules\CPU.ps1 -ArgumentList $objchild,$holdflag
                         Write-Host "CPU Module called."
                     }  
                     Memory {
                         Write-Host "Memory Match"
-                        Start-Job -FilePath C:\Users\A667141\Documents\Modules\Memory.ps1 -ArgumentList $objchild,$holdflag
+                        Start-Job -FilePath C:\Modules\Memory.ps1 -ArgumentList $objchild,$holdflag
                         Write-Host "Service Module called."
                     } 
                     Default {
@@ -197,8 +196,6 @@ foreach ($Incident1 in $Requests.result) {
  }
 
 # [Math]::Round((Get-Date).ToFileTime() / 10000000 - 11644473600)
-
-#$csv = import-csv "C:\Users\A667141\Documents\Inc_Track.csv"
 
  $lsthr = $csv | where Last_Updated -LT (([Math]::Round((Get-Date).ToFileTime() / 10000000 - 11644473600)-3600))
  $lsthr
